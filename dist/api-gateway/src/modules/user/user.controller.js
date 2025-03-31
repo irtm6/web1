@@ -34,13 +34,13 @@ let UserController = UserController_1 = class UserController {
     registerUser(user) {
         return __awaiter(this, void 0, void 0, function* () {
             this.logger.log('Registering user');
-            return this.userService.createUser(user); // Если createUser действительно существует
+            return this.userService.createUser(user);
         });
     }
     loginUser(dto) {
         return __awaiter(this, void 0, void 0, function* () {
             this.logger.log(`Attempting to log in user with email: ${dto.email}`);
-            return this.userService.loginUser(dto); // Возвращаем токены, сгенерированные User Service
+            return this.userService.loginUser(dto);
         });
     }
     getProfile(req) {

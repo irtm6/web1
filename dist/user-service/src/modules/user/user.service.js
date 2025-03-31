@@ -1,10 +1,43 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
@@ -38,7 +71,7 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const microservices_1 = require("@nestjs/microservices");
 const typeorm_2 = require("typeorm");
-const uuid_1 = require("uuid");
+const bcrypt = __importStar(require("bcrypt"));
 const auth_service_1 = require("../auth/auth.service");
 const users_entity_1 = require("../../entities/users.entity");
 const role_entity_1 = require("../../entities/role.entity");
@@ -52,23 +85,19 @@ let UserService = UserService_1 = class UserService {
     createUser(dto) {
         return __awaiter(this, void 0, void 0, function* () {
             this.logger.log(`Creating user: ${JSON.stringify(dto)}`);
-            const { email, username } = dto; // Роль убираем, т.к. будет назначена по умолчанию
-            const userPassword = (0, uuid_1.v4)().slice(0, 8); // Генерация пароля
-            // Присваиваем роль по умолчанию — "user"
+            const { email, username, password } = dto;
             const roleEntity = yield this.roleRepository.findOneBy({ name: 'user' });
-            // Если роль "user" не найдена, выбрасываем ошибку
             if (!roleEntity) {
                 throw new microservices_1.RpcException(`Default role 'user' not found`);
             }
+            const hashedPassword = yield bcrypt.hash(password, 10);
             const userData = {
                 email,
                 username,
-                password: userPassword,
+                password: hashedPassword,
             };
-            // Создаем пользователя с ролью "user"
             const $user = this.userRepository.create(Object.assign(Object.assign({}, userData), { role_id: roleEntity.id }));
             const user = yield this.userRepository.save($user);
-            // Возвращаем токен авторизации
             return this.authService.generateToken({
                 member_id: user.id,
                 role_id: user.role_id,
@@ -79,17 +108,14 @@ let UserService = UserService_1 = class UserService {
         return __awaiter(this, void 0, void 0, function* () {
             this.logger.log(`Attempting login for email: ${dto.email}`);
             const { email, password } = dto;
-            // Используем `findUserByEmail` для поиска пользователя по email
             const user = yield this.findUserByEmail(email);
-            // Если пользователь не найден
             if (!user) {
-                throw new microservices_1.RpcException('Invalid email or password');
+                throw new microservices_1.RpcException('user not found');
             }
-            // Проверяем пароль
-            if (user.password !== password) {
-                throw new microservices_1.RpcException('Invalid email or password');
+            const isPasswordValid = yield bcrypt.compare(password, user.password);
+            if (!isPasswordValid) {
+                throw new microservices_1.RpcException('Invalid password');
             }
-            // Генерируем токены и возвращаем
             return this.authService.generateToken({
                 member_id: user.id,
                 role_id: user.role_id,
