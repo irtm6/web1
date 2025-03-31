@@ -4,23 +4,23 @@ import { AvailableSlot } from './available-slot.entity';
 @Entity('venues')
 export class Venue {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id!: string;
 
     @Column()
-    name: string;
+    name!: string;
 
     @Column()
-    location: string;
+    location!: string;
 
     @Column({ type: 'enum', enum: ['football', 'tennis', 'basketball'], default: 'football' })
-    type: string;
+    type!: string;
 
     @Column({ type: 'text', nullable: true })
-    description: string;
+    description!: string;
 
     @CreateDateColumn()
-    created_at: Date;
+    created_at!: Date;
 
     @OneToMany(() => AvailableSlot, slot => slot.venue)
-    slots: AvailableSlot[];
+    slots!: AvailableSlot[];
 }

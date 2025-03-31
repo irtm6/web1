@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && copy package.json dist\\api-gateway\\ && copy package.json dist\\user-service\\",
+    "build": "tsc && copy package.json dist\\api-gateway\\ && copy package.json dist\\user-service\\ && copy package.json dist\\venue-service\\",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm run start:api-gateway",
-    "start:all": "concurrently \"npm run start:api-gateway\" \"npm run start:user-service\"",
+    "start": "npm run start:all",
+    "start:all": "concurrently \"npm run start:api-gateway\" \"npm run start:user-service\" \"npm run start:venue-service\"",
     "start:api-gateway": "node dist/api-gateway/src/main.js",
-    "start:user-service": "node dist/user-service/src/main.js"
+    "start:user-service": "node dist/user-service/src/main.js",
+    "start:venue-service": "node dist/venue-service/src/main.js"
   },
   "keywords": [],
   "author": "",
@@ -20,11 +21,13 @@
     "@nestjs/microservices": "^11.0.11",
     "@nestjs/platform-express": "^11.0.11",
     "@nestjs/typeorm": "^11.0.0",
+    "@types/node": "^22.13.14",
     "amqp-connection-manager": "^4.1.14",
     "amqplib": "^0.10.5",
     "bcrypt": "^5.1.1",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.14.0",
+    "reflect-metadata": "^0.2.2",
     "typeorm": "^0.3.21",
     "typescript": "^5.8.2"
   },

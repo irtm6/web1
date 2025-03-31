@@ -1,6 +1,8 @@
-﻿import 'dotenv/config';
-
-export const configService = {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.configService = void 0;
+require("dotenv/config");
+exports.configService = {
     getPort: () => process.env.PORT ? process.env.PORT : '3002', // Забезпечуємо, щоб це був рядок
     getBrockerUrl: () => process.env.BROCKER_URI || 'amqp://guest:guest@127.0.0.1:5672',
     getDatabaseConfig: () => ({

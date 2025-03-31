@@ -3,14 +3,14 @@
 export class CreateVenueDto {
     @IsString()
     @IsNotEmpty()
-    name: string;
+    name!: string;
 
     @IsString()
     @IsNotEmpty()
-    location: string;
+    location!: string;
 
     @IsEnum(['football', 'tennis', 'basketball'])
-    type: string;
+    type!: string;
 
     @IsString()
     @IsOptional()

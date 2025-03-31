@@ -13,5 +13,9 @@
     "skipLibCheck": true
   },
   "exclude": ["node_modules", "dist"],
-  "include": [ "api-gateway/src/**/*.ts", "user-service/src/**/*.ts"]
+  "include": [
+    "api-gateway/src/**/*.ts",
+    "user-service/src/**/*.ts",
+    "venue-service/src/**/*.ts"
+  ]
 }

@@ -6,15 +6,20 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ModulesModule = void 0;
+exports.VenueModule = void 0;
 const common_1 = require("@nestjs/common");
-const user_module_1 = require("./user/user.module");
-const venue_module_1 = require("./venues/venue.module"); // Імпортуємо VenueModule
-let ModulesModule = class ModulesModule {
+const typeorm_1 = require("@nestjs/typeorm");
+const venue_service_1 = require("./venue.service");
+const venue_controller_1 = require("./venue.controller");
+const venue_entity_1 = require("../../entities/venue.entity");
+const available_slot_entity_1 = require("../../entities/available-slot.entity");
+let VenueModule = class VenueModule {
 };
-exports.ModulesModule = ModulesModule;
-exports.ModulesModule = ModulesModule = __decorate([
+exports.VenueModule = VenueModule;
+exports.VenueModule = VenueModule = __decorate([
     (0, common_1.Module)({
-        imports: [user_module_1.UserModule, venue_module_1.VenueModule], // Додаємо VenueModule до імпортів
+        imports: [typeorm_1.TypeOrmModule.forFeature([venue_entity_1.Venue, available_slot_entity_1.AvailableSlot])],
+        controllers: [venue_controller_1.VenueController],
+        providers: [venue_service_1.VenueService],
     })
-], ModulesModule);
+], VenueModule);

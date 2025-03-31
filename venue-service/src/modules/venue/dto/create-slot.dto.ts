@@ -3,14 +3,14 @@
 export class CreateSlotDto {
     @IsUUID()
     @IsNotEmpty()
-    venueId: string;
+    venueId!: string;
 
     @IsDateString()
-    start_time: string;
+    start_time!: string;
 
     @IsDateString()
-    end_time: string;
+    end_time!: string;
 
     @IsBoolean()
-    is_available: boolean;
+    is_available!: boolean;
 }
